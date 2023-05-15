@@ -1,6 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Simon Borghese (c) 2023, See License.txt for details (if included with distro)
 
 #pragma once
+
+#include <vector>
+#include <map>
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -42,8 +45,14 @@ protected:
 	float LookSpeed = 1.0f;
 
 	UPROPERTY(EditAnywhere)
-	class UP_PlayerInvetory *Invetory;
+	class UP_PlayerInvetory *Inventory;
 
+	UPROPERTY(VisibleAnywhere)
+	TArray<AG_Item*> HoldableItems;
+
+
+	UFUNCTION()
+	void PickupNearest();
 
 public:	
 	// Called every frame
@@ -51,5 +60,11 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION()
+	void AddReachableItem(AG_Item* Item);
+
+	UFUNCTION()
+	void RemoveReachableItem(AG_Item* Item);
 
 };

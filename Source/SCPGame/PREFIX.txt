@@ -1,0 +1,4 @@
+[NO_PREFIX]=MISC/Important
+G_* = Game Logic/Item
+P_* = Player Logic
+W_* = World Logic

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Simon Borghese (c) 2023, See License.txt for details (if included with distro)
 
 
 #include "FPSPlayer.h"
@@ -21,7 +21,7 @@ AFPSPlayer::AFPSPlayer()
 	Camera->SetupAttachment(RootComponent);
 	Camera->SetRelativeLocation(FVector3d(0.f, 0.f, GetDefaultHalfHeight()));
 
-	Invetory = CreateDefaultSubobject<UP_PlayerInvetory>(TEXT("Invetory"));
+	Inventory = CreateDefaultSubobject<UP_PlayerInvetory>(TEXT("Invetory"));
 	
 	
 }
@@ -63,6 +63,16 @@ void AFPSPlayer::AddJump()
 	bPressedJump = true;
 }
 
+void AFPSPlayer::PickupNearest()
+{
+	if (!HoldableItems.IsEmpty())
+	{
+		AG_Item* NearestItem = HoldableItems.Pop();
+		Inventory->AddItem(NearestItem);
+		NearestItem->PickupItem();
+	}
+}
+
 // Called every frame
 void AFPSPlayer::Tick(float DeltaTime)
 {
@@ -88,5 +98,22 @@ void AFPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	PlayerInputComponent->BindAxis("CameraPitch", this, &AFPSPlayer::AddPitch);
 	PlayerInputComponent->BindAxis("CameraYaw", this, &AFPSPlayer::AddYaw);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AFPSPlayer::AddJump);
+	PlayerInputComponent->BindAction("Pickup", IE_Pressed, this, &AFPSPlayer::PickupNearest);
+}
+
+void AFPSPlayer::AddReachableItem(AG_Item* Item)
+{
+	if (!HoldableItems.Contains(Item))
+	{
+		HoldableItems.Add(Item);
+	}
+}
+
+void AFPSPlayer::RemoveReachableItem(AG_Item* Item)
+{
+	if (HoldableItems.Contains(Item))
+	{
+		HoldableItems.Remove(Item);
+	}
 }
 
