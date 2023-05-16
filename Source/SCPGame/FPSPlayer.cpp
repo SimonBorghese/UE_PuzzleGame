@@ -63,13 +63,12 @@ void AFPSPlayer::AddJump()
 	bPressedJump = true;
 }
 
-void AFPSPlayer::PickupNearest()
+void AFPSPlayer::InteractNearest()
 {
-	if (!HoldableItems.IsEmpty())
+	if (!ReachableItems.IsEmpty())
 	{
-		AG_Item* NearestItem = HoldableItems.Pop();
-		Inventory->AddItem(NearestItem);
-		NearestItem->PickupItem();
+		AG_Interactable* NearestItem = ReachableItems.Pop();
+		NearestItem->OnInteract(this);
 	}
 }
 
@@ -98,22 +97,37 @@ void AFPSPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	PlayerInputComponent->BindAxis("CameraPitch", this, &AFPSPlayer::AddPitch);
 	PlayerInputComponent->BindAxis("CameraYaw", this, &AFPSPlayer::AddYaw);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AFPSPlayer::AddJump);
-	PlayerInputComponent->BindAction("Pickup", IE_Pressed, this, &AFPSPlayer::PickupNearest);
+	PlayerInputComponent->BindAction("Pickup", IE_Pressed, this, &AFPSPlayer::InteractNearest);
 }
 
-void AFPSPlayer::AddReachableItem(AG_Item* Item)
+void AFPSPlayer::AddReachableItem(AG_Interactable* Item)
 {
-	if (!HoldableItems.Contains(Item))
+	if (!ReachableItems.Contains(Item))
 	{
-		HoldableItems.Add(Item);
+		ReachableItems.Add(Item);
 	}
 }
 
-void AFPSPlayer::RemoveReachableItem(AG_Item* Item)
+void AFPSPlayer::RemoveReachableItem(AG_Interactable* Item)
 {
-	if (HoldableItems.Contains(Item))
+	if (ReachableItems.Contains(Item))
 	{
-		HoldableItems.Remove(Item);
+		ReachableItems.Remove(Item);
 	}
+}
+
+void AFPSPlayer::AddInventoryItem(AG_Item* Item)
+{
+	Inventory->AddItem(Item);
+}
+
+void AFPSPlayer::RemoveInventoryItem(AG_Item* Item)
+{
+	Inventory->RemoveItem(Item);
+}
+
+UP_PlayerInvetory* AFPSPlayer::GetInventory()
+{
+	return Inventory;
 }
 

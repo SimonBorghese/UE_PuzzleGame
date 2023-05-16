@@ -15,11 +15,7 @@ AG_Item::AG_Item()
 
 	WorldMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("World Mesh"));
 	WorldMesh->SetupAttachment(RootComponent);
-
-	PickupArea = CreateDefaultSubobject<UBoxComponent>(TEXT("Pickup Collider"));
-	PickupArea->SetupAttachment(RootComponent);
-	PickupArea->OnComponentBeginOverlap.AddDynamic(this, &AG_Item::OnOverlapBegin);
-	PickupArea->OnComponentEndOverlap.AddDynamic(this, &AG_Item::OnOverlapEnd);
+	
 }
 
 // Called when the game starts or when spawned
@@ -27,27 +23,6 @@ void AG_Item::BeginPlay()
 {
 	Super::BeginPlay();
 	
-}
-
-void AG_Item::OnOverlapBegin(UPrimitiveComponent* OtherComp, class AActor* OtherActor,
-	UPrimitiveComponent* HitComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor && OtherActor->GetClass() && OtherActor->GetClass() == AFPSPlayer::StaticClass())
-	{
-		AFPSPlayer *FPSPlayer = static_cast<AFPSPlayer*>(OtherActor);
-		FPSPlayer->AddReachableItem(this);
-	}
-}
-
-void AG_Item::OnOverlapEnd(UPrimitiveComponent* OtherComp, AActor* OtherActor,
-	UPrimitiveComponent* ThisComp, int32 OtherBodyIndex)
-{
-	if (OtherActor && OtherActor->GetClass() && OtherActor->GetClass() == AFPSPlayer::StaticClass())
-	{
-		AFPSPlayer *FPSPlayer = static_cast<AFPSPlayer*>(OtherActor);
-		// EXPENSIVE OPERATION!!!
-		FPSPlayer->RemoveReachableItem(this);
-	}
 }
 
 // Called every frame
@@ -63,5 +38,12 @@ void AG_Item::PickupItem()
 	WorldMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PrimaryActorTick.bCanEverTick = false;
 	PickupArea->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AG_Item::OnInteract(AFPSPlayer* Player)
+{
+	Super::OnInteract(Player);
+	PickupItem();
+	Player->AddInventoryItem(this);
 }
 

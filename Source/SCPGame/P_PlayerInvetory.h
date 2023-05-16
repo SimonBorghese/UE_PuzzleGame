@@ -30,9 +30,13 @@ public:
 
 	TArray<AG_Item*> GetInventory();
 
+	UFUNCTION(BlueprintCallable)
 	AG_Item* GetItem(int Index);
+	UFUNCTION(BlueprintCallable)
 	int		 GetItemIndex(AG_Item* Item);
+	UFUNCTION(BlueprintCallable)
 	void	 RemoveItem(AG_Item *Item);
 	void	 RemoveItem(int ItemIndex);
+	UFUNCTION(BlueprintCallable)
 	int		 AddItem(AG_Item *Item);
 };

@@ -48,11 +48,11 @@ protected:
 	class UP_PlayerInvetory *Inventory;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<AG_Item*> HoldableItems;
+	TArray<class AG_Interactable*> ReachableItems;
 
 
 	UFUNCTION()
-	void PickupNearest();
+	void InteractNearest();
 
 public:	
 	// Called every frame
@@ -62,9 +62,18 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION()
-	void AddReachableItem(AG_Item* Item);
+	void AddReachableItem(AG_Interactable* Item);
 
 	UFUNCTION()
-	void RemoveReachableItem(AG_Item* Item);
+	void RemoveReachableItem(AG_Interactable* Item);
+
+	UFUNCTION()
+	void AddInventoryItem(AG_Item *Item);
+
+	UFUNCTION()
+	void RemoveInventoryItem(AG_Item *Item);
+
+	UFUNCTION(BlueprintCallable)
+	UP_PlayerInvetory *GetInventory();
 
 };
